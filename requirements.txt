@@ -1,0 +1,5 @@
+selenium
+prettytable
+mechanize
+requests
+beautifulsoup4
