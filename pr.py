@@ -303,17 +303,19 @@ def check_found_Cookies_with_DisconnectMeList(stringArray_with_cookies):
 
     #iterate through cookies that we found with webkoll/privacyscore
     for cookie in stringArray_with_cookies:
+	tmpSplit = cookie.split(".")    
+	domain = ".".join(tmpSplit[-2:])
         #iterate through the the different Tracker categories of the DisconnectMe and check if it contains our cookie
         tracker_counter = 0
         for category in loaded_known_tracker_list["categories"]:
             for trackerlist in loaded_known_tracker_list["categories"][category]:
                 trackerlist_str = str(trackerlist)
                 #when we find first match:
-                if (cookie in trackerlist_str and tracker_counter == 0 ):
+                if (domain in trackerlist_str and tracker_counter == 0 ):
                     processed_stringArray_with_cookies.append(cookie + " found in: " + category)
                     tracker_counter = tracker_counter + 1
                #when we find the cookie in another category
-                elif (cookie in trackerlist_str and tracker_counter > 0 ):
+                elif (domain in trackerlist_str and tracker_counter > 0 ):
                     processed_stringArray_with_cookies[-1] += ", " + category
 
         #when we find no hits we just add cookie to array and mention that it is not in DisconnectMeList
