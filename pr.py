@@ -91,7 +91,7 @@ while True:
 
 #create Tables for both Tools
 local_privacyscore_table = PrettyTable()
-local_privacyscore_table.field_names=["URL","cookies","countryName","hastls","https"]
+local_privacyscore_table.field_names=["URL","cookies","countryName","hastls","https","third"]
 
 local_webbkoll_table=PrettyTable() 
 local_webbkoll_table.field_names = ["URL","cookies", "Third", "HSTS Information", "https"]
@@ -139,13 +139,7 @@ for url in urls:
    #open the corresponding json file found
    with open(website_scan_result) as f: 
        data = json.load(f) 
-   #extract the data from the json file
-   try:
-       privacyscore_cookies = len(data["cookies"])
-       print(data["cookies"])
-   except:
-       privacyscore_cookies = None
-       
+   #extract the data from the json file  
    try:
       domains = f'www.{url}'
       privacyscore_domain_cookies = []
@@ -157,6 +151,11 @@ for url in urls:
           privacyscore_domain_cookies = None
    except:
        privacyscore_domain_cookies=None
+   try:
+       privacyscore_cookies = len(data["cookies"]-len(privacyscore_domain_cookies))
+       print(data["cookies"])
+   except:
+       privacyscore_cookies = None
        
    try:
        countryName = data["mail"]["certificate"]["subject"]["countryName"]
@@ -174,8 +173,12 @@ for url in urls:
        https = data["redirect_chain"][0].split("?")[0]
    except:
        https= None
+   try:
+       third=len(privacyscore_domain_cookies)
+   except:
+       third=None
    #add the specific data to the privacyscore Table
-   local_privacyscore_table.add_row([url,privacyscore_cookies,countryName,hastls,https])
+   local_privacyscore_table.add_row([url,privacyscore_cookies,countryName,hastls,https,third])
    
 print("\n")  
 #determine the time and the IP-Address
@@ -278,7 +281,7 @@ for data1 in table1_data:
            
 print("common data table:")
 print(common_table) 
- 
+
 def clone_or_pull_repo(repo_url, local_folder):
     #update the DisconnectMe Trackerlist if it already exist
     try:
@@ -346,7 +349,6 @@ processedArray = check_found_Cookies_with_DisconnectMeList(stringArray_with_cook
 print(stringArray_with_cookies)
 print(processedArray)
 print("\n")
-
 
     
 
@@ -616,6 +618,3 @@ def compare_both_tools(tables):
 
 #if __name__ == "__main__":
  #   main()
- 
-
-
